@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CleaningModule } from './cleaning/cleaning.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         autoLoadEntities: true,
       }),
     }),
+    CleaningModule,
   ],
 })
 export class AppModule {}
