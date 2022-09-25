@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CleaningController } from './cleaning.controller';
-import { CleanExecution } from './clean-execution.entity';
-import { CleaningExecutionService } from './service/cleaning-execution.service';
+import { CleaningController } from 'src/cleaning/cleaning.controller';
+import { CleanExecution } from 'src/cleaning/clean-execution.entity';
+import { CleaningExecutionService } from 'src/cleaning/service/cleaning-execution.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([CleanExecution])],

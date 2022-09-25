@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
 import { config } from 'dotenv';
-import { postgresConfigFactory } from './src/config/postgres.config';
+import { postgresConfigFactory } from 'src/config/postgres.config';
 
 config();
 

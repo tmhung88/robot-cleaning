@@ -3,9 +3,9 @@ import {
   Command,
   Direction,
   Position,
-} from '../clean-office.dto';
-import { CleanExecution } from '../clean-execution.entity';
-import { PerformanceHelper } from './performance.helper';
+} from 'src/cleaning/clean-office.dto';
+import { CleanExecution } from 'src/cleaning/clean-execution.entity';
+import { PerformanceHelper } from 'src/cleaning/service/performance.helper';
 
 class CleaningRobot {
   constructor(private position: Position) {}

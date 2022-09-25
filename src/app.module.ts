@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { CleaningModule } from './cleaning/cleaning.module';
+import { CleaningModule } from 'src/cleaning/cleaning.module';
 import {
   PostgresConfig,
   postgresConfigFactory,
-} from './config/postgres.config';
-import { appConfigFactory } from './config/app.config';
+} from 'src/config/postgres.config';
+import { appConfigFactory } from 'src/config/app.config';
 
 @Module({
   imports: [

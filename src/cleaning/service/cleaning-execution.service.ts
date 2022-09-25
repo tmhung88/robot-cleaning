@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
-
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CleanOfficeInput } from '../clean-office.dto';
-import { CleanExecution } from '../clean-execution.entity';
-import { CleaningSession } from './cleaning-session.model';
+import { CleanOfficeInput } from 'src/cleaning/clean-office.dto';
+import { CleanExecution } from 'src/cleaning/clean-execution.entity';
+import { CleaningSession } from 'src/cleaning/service/cleaning-session.model';
 
 @Injectable()
 export class CleaningExecutionService {
