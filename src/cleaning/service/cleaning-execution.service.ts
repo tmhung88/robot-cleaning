@@ -17,10 +17,7 @@ export class CleaningExecutionService {
   }
 
   private async saveExecutionResult(
-    executionResult: Pick<
-      CleanExecution,
-      'duration' | 'commands' | 'uniqueVisits'
-    >,
+    executionResult: Pick<CleanExecution, 'duration' | 'commands' | 'uniqueVisits'>,
   ): Promise<CleanExecution> {
     const execution = new CleanExecution();
     execution.commands = executionResult.commands;

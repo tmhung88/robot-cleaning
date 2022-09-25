@@ -1,9 +1,4 @@
-import {
-  CleanOfficeInput,
-  Command,
-  Direction,
-  Position,
-} from 'src/cleaning/clean-office.dto';
+import { CleanOfficeInput, Command, Direction, Position } from 'src/cleaning/clean-office.dto';
 import { CleanExecution } from 'src/cleaning/clean-execution.entity';
 import { PerformanceHelper } from 'src/cleaning/service/performance.helper';
 
@@ -66,18 +61,14 @@ type PositionHash = string;
 export class CleaningSession {
   private readonly uniquePositions = new Map<PositionHash, Position>();
   private track(positions: Position[]): void {
-    positions.forEach((position) =>
-      this.uniquePositions.set(this.hashPosition(position), position),
-    );
+    positions.forEach((position) => this.uniquePositions.set(this.hashPosition(position), position));
   }
 
   private hashPosition({ x, y }: Position): PositionHash {
     return `${x}:${y}`;
   }
 
-  performCleaning(
-    input: CleanOfficeInput,
-  ): Pick<CleanExecution, 'commands' | 'duration' | 'uniqueVisits'> {
+  performCleaning(input: CleanOfficeInput): Pick<CleanExecution, 'commands' | 'duration' | 'uniqueVisits'> {
     const [uniqueVisits, duration] = PerformanceHelper.measureDuration(() => {
       const cleaningRobot = new CleaningRobot(input.start);
       for (const command of input.commands) {
