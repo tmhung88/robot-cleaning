@@ -7,9 +7,11 @@ import {
   postgresConfigFactory,
 } from 'src/config/postgres.config';
 import { appConfigFactory } from 'src/config/app.config';
+import { LoggerModule } from 'nestjs-pino';
 
 @Module({
   imports: [
+    LoggerModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [appConfigFactory, postgresConfigFactory],
