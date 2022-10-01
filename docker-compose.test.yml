@@ -1,0 +1,30 @@
+services:
+  test-postgres:
+    image: postgres:13.8-alpine
+    restart: always
+    env_file:
+      - .env.test
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+
+  test-postgres-migration:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: development
+    env_file:
+      - .env.test
+    command: npm run typeorm:run
+    depends_on:
+      - test-postgres
+
+  test-robot-cleaning-service:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: development
+    env_file:
+      - .env.test
+    command: npm run test:e2e
+    depends_on:
+      - test-postgres-migration
