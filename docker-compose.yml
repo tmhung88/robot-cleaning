@@ -1,0 +1,43 @@
+services:
+  postgres:
+    image: postgres:13.8-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - 5432:5432
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+
+  postgres-migration:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: development
+    env_file:
+      - .env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run typeorm:run
+    depends_on:
+      - postgres
+
+  robot-cleaning-service:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: development
+    env_file:
+      - .env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run start:debug
+    ports:
+      - 5000:5000 # api port
+      - 9229:9229 # debug port
+    depends_on:
+      -   postgres-migration
