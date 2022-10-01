@@ -4,8 +4,6 @@ services:
     restart: always
     env_file:
       - .env.test
-    volumes:
-      - ./postgres-data:/var/lib/postgresql/data
 
   test-postgres-migration:
     build:
@@ -14,6 +12,9 @@ services:
       target: development
     env_file:
       - .env.test
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
     command: npm run typeorm:run
     depends_on:
       - test-postgres
@@ -25,6 +26,9 @@ services:
       target: development
     env_file:
       - .env.test
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
     command: npm run test:e2e
     depends_on:
       - test-postgres-migration
