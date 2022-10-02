@@ -2,8 +2,12 @@ import { CleaningCommand, CleaningInput, Direction, Position } from 'src/cleanin
 import { CleanExecution } from 'src/cleaning/clean-execution.entity';
 import { assertNonNullable } from 'src/helper/assert.helper';
 import { PerformanceHelper } from 'src/helper/performance.helper';
+import { Injectable, Logger } from '@nestjs/common';
 
+@Injectable()
 export class CleaningSession {
+  private readonly logger = new Logger(CleaningSession.name);
+
   static readonly MIN_X = -100000;
   static readonly MAX_X = 100000;
   static readonly MIN_Y = -100000;
@@ -11,18 +15,23 @@ export class CleaningSession {
   static readonly MAX_STEPS = 100000 - 1;
   static readonly MAX_COMMANDS = 10000;
 
-  static execute(input: CleaningInput): Pick<CleanExecution, 'commands' | 'duration' | 'uniqueVisits'> {
+  execute(input: CleaningInput): Pick<CleanExecution, 'commands' | 'duration' | 'uniqueVisits'> {
+    this.logger.debug(`execute() - started`);
     const [uniqueVisits, duration] = PerformanceHelper.measureDuration(() => {
       const cleaningRobot = new CleaningRobot(input.start);
       const visitTracker = new VisitTracker();
       visitTracker.trackPositions([input.start]);
-      input.commands.forEach((command) => {
+      input.commands.forEach((command, index) => {
         const visits = cleaningRobot.move(command);
         visitTracker.trackPositions(visits);
+        if ((index + 1) % 100 === 0) {
+          this.logger.debug(`${index + 1}/${input.commands.length} commands completed`);
+        }
       });
 
       return visitTracker.countUniqueVisits();
     });
+    this.logger.debug(`execute() - completed`);
     return { commands: input.commands.length, uniqueVisits, duration };
   }
 }

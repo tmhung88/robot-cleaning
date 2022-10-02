@@ -9,11 +9,12 @@ import { CleaningSession } from 'src/cleaning/services/cleaning-session.model';
 export class CleaningExecutionService {
   constructor(
     @InjectRepository(CleanExecution)
-    private cleanExecutionRepo: Repository<CleanExecution>,
+    private readonly cleanExecutionRepo: Repository<CleanExecution>,
+    private readonly cleaningSession: CleaningSession,
   ) {}
 
   async clean(input: CleaningInput): Promise<CleanExecution> {
-    const cleanResult = CleaningSession.execute(input);
+    const cleanResult = this.cleaningSession.execute(input);
     return await this.saveExecutionResult(cleanResult);
   }
 

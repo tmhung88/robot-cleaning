@@ -4,6 +4,8 @@ import { CleanExecution } from 'src/cleaning/clean-execution.entity';
 import { PerformanceHelper } from 'src/helper/performance.helper';
 
 describe('CleaningSession', () => {
+  const cleaningSession = new CleaningSession();
+
   describe('execute()', () => {
     const mockedDuration = 0.01111;
     beforeEach(() => {
@@ -23,7 +25,7 @@ describe('CleaningSession', () => {
     };
 
     it('should track the initial starting point when no commands are given', () => {
-      const actualExecution = CleaningSession.execute({ start: { x: -1, y: 14 }, commands: [] });
+      const actualExecution = cleaningSession.execute({ start: { x: -1, y: 14 }, commands: [] });
       assertExecution(actualExecution, {
         commands: 0,
         uniqueVisits: 1,
@@ -31,7 +33,7 @@ describe('CleaningSession', () => {
     });
 
     it('should track unique visits', () => {
-      const actualExecution = CleaningSession.execute({
+      const actualExecution = cleaningSession.execute({
         start: { x: 0, y: 0 },
         commands: [
           { steps: 2, direction: Direction.north },
@@ -58,7 +60,7 @@ describe('CleaningSession', () => {
     });
 
     it('should not track visits too far North', () => {
-      const actualExecution = CleaningSession.execute({
+      const actualExecution = cleaningSession.execute({
         start: { x: 0, y: CleaningSession.MAX_Y },
         commands: [
           { steps: 1, direction: Direction.north },
@@ -72,7 +74,7 @@ describe('CleaningSession', () => {
     });
 
     it('should not track visits too far South', () => {
-      const actualExecution = CleaningSession.execute({
+      const actualExecution = cleaningSession.execute({
         start: { x: 0, y: CleaningSession.MIN_Y },
         commands: [
           { steps: 4, direction: Direction.south },
@@ -86,7 +88,7 @@ describe('CleaningSession', () => {
     });
 
     it('should not track visits too far East', () => {
-      const actualExecution = CleaningSession.execute({
+      const actualExecution = cleaningSession.execute({
         start: { x: CleaningSession.MAX_X, y: 0 },
         commands: [
           { steps: 1, direction: Direction.east },
@@ -100,7 +102,7 @@ describe('CleaningSession', () => {
     });
 
     it('should not track visits too far West', () => {
-      const actualExecution = CleaningSession.execute({
+      const actualExecution = cleaningSession.execute({
         start: { x: CleaningSession.MIN_X, y: 0 },
         commands: [
           { steps: 1, direction: Direction.west },
@@ -124,7 +126,7 @@ describe('CleaningSession', () => {
         );
       }
 
-      const actualExecution = CleaningSession.execute({
+      const actualExecution = cleaningSession.execute({
         start: { x: -50, y: -50 },
         commands,
       });
