@@ -9,6 +9,6 @@ export class CleaningController {
 
   @Post('/tibber-developer-test/enter-path')
   async cleanOffice(@Body() input: CleaningInput): Promise<CleanExecution> {
-    return this.cleaningService.clean(input);
+    return await this.cleaningService.clean(input);
   }
 }
