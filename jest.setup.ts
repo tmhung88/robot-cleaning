@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import CustomMatcherResult = jest.CustomMatcherResult;
 
 expect.extend({
