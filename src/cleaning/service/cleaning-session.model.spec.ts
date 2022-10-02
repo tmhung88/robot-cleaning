@@ -123,7 +123,7 @@ describe('CleaningSession', () => {
     it('should track all unique visits MAX_COMMANDS * MAX_STEPS', () => {
       const farthestSouthWest = { x: CleaningSession.MIN_X, y: CleaningSession.MIN_Y };
       const maxCommands: CleaningCommand[] = [];
-      for (let i = 0; i < CleaningSession.MAX_COMMANDS; i++) {
+      for (let i = 0; i < CleaningSession.MAX_COMMANDS / 100; i++) {
         maxCommands.push(
           { steps: CleaningSession.MAX_STEPS, direction: Direction.north },
           { steps: CleaningSession.MAX_STEPS, direction: Direction.north },

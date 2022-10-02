@@ -60,18 +60,32 @@ class CleaningRobot {
 }
 
 class VisitTracker {
-  private readonly uniquePositions = new Map<PositionHash, Position>();
+  private partitionMap = new Map<string, Map<PositionHash, Position>>();
 
-  track(positions: Position[]): void {
-    positions.forEach((position) => this.uniquePositions.set(this.hashPosition(position), position));
+  trackPositions(positions: Position[]): void {
+    positions.forEach((position) => this.trackPosition(position));
   }
 
   countUniqueVisits(): number {
-    return this.uniquePositions.size;
+    return Array.from(this.partitionMap.values()).reduce((prevCount, currentPartition) => prevCount + currentPartition.size, 0);
   }
 
+  private trackPosition(position: Position): void {
+    const partition = this.getPartition(position);
+    partition.set(this.hashPosition(position), position);
+  }
+
+  private getPartition(position: Position): Map<PositionHash, Position> {
+    const partitionHash = `${Math.floor(position.x / 4096)}:${Math.floor(position.y / 4096)}`
+    if (!this.partitionMap.has(partitionHash)) {
+      this.partitionMap.set(partitionHash, new Map());
+    }
+    return this.partitionMap.get(partitionHash);
+  }
+
+
   private hashPosition({ x, y }: Position): PositionHash {
-    return `${x}:${y}`;
+    return `${Math.abs(x) % 4096}:${Math.abs(y) % 4096}`;
   }
 }
 
@@ -89,10 +103,10 @@ export class CleaningSession {
     const [uniqueVisits, duration] = PerformanceHelper.measureDuration(() => {
       const cleaningRobot = new CleaningRobot(input.start);
       const visitTracker = new VisitTracker();
-      visitTracker.track([input.start]);
+      visitTracker.trackPositions([input.start]);
       for (const command of input.commands) {
         const visits = cleaningRobot.move(command);
-        visitTracker.track(visits);
+        visitTracker.trackPositions(visits);
       }
       return visitTracker.countUniqueVisits();
     });
