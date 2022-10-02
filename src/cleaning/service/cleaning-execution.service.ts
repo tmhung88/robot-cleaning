@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CleanOfficeInput } from 'src/cleaning/clean-office.dto';
+import { CleaningInput } from 'src/cleaning/cleaning-input.dto';
 import { CleanExecution } from 'src/cleaning/clean-execution.entity';
 import { CleaningSession } from 'src/cleaning/service/cleaning-session.model';
 
@@ -10,9 +10,8 @@ export class CleaningExecutionService {
   @InjectRepository(CleanExecution)
   private cleanExecutionRepo: Repository<CleanExecution>;
 
-  async clean(input: CleanOfficeInput): Promise<CleanExecution> {
-    const cleaningSession = new CleaningSession();
-    const cleanResult = cleaningSession.performCleaning(input);
+  async clean(input: CleaningInput): Promise<CleanExecution> {
+    const cleanResult = CleaningSession.execute(input);
     return await this.saveExecutionResult(cleanResult);
   }
 

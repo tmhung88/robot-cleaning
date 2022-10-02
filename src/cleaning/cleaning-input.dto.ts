@@ -20,13 +20,6 @@ export class Position {
   @Min(-100000)
   @Max(100000)
   y: number;
-
-  static from({ x, y }: { x: number; y: number }): Position {
-    const position = new Position();
-    position.x = x;
-    position.y = y;
-    return position;
-  }
 }
 
 export enum Direction {
@@ -46,7 +39,7 @@ export class Command {
   steps: number;
 }
 
-export class CleanOfficeInput {
+export class CleaningInput {
   @ValidateNested()
   @Type(() => Position)
   start: Position;

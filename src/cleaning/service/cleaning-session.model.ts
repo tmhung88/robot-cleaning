@@ -1,4 +1,4 @@
-import { CleanOfficeInput, Command, Direction, Position } from 'src/cleaning/clean-office.dto';
+import { CleaningInput, Command, Direction, Position } from 'src/cleaning/cleaning-input.dto';
 import { CleanExecution } from 'src/cleaning/clean-execution.entity';
 import { PerformanceHelper } from 'src/cleaning/service/performance.helper';
 
@@ -29,53 +29,59 @@ class CleaningRobot {
   }
 
   private moveOneStepEast(): void {
-    this.position = Position.from({
+    this.position = {
       x: this.position.x + 1,
       y: this.position.y,
-    });
+    };
   }
 
   private moveOneStepWest(): void {
-    this.position = Position.from({
+    this.position = {
       x: this.position.x - 1,
       y: this.position.y,
-    });
+    };
   }
 
   private moveOneStepNorth(): void {
-    this.position = Position.from({
+    this.position = {
       x: this.position.x,
       y: this.position.y + 1,
-    });
+    };
   }
 
   private moveOneStepSouth(): void {
-    this.position = Position.from({
+    this.position = {
       x: this.position.x,
       y: this.position.y - 1,
-    });
+    };
+  }
+}
+
+class VisitTracker {
+  private readonly uniquePositions = new Map<PositionHash, Position>();
+  track(positions: Position[]): void {
+    positions.forEach((position) => this.uniquePositions.set(this.hashPosition(position), position));
+  }
+
+  countUniqueVisits(): number {
+    return this.uniquePositions.size;
+  }
+  private hashPosition({ x, y }: Position): PositionHash {
+    return `${x}:${y}`;
   }
 }
 
 type PositionHash = string;
 export class CleaningSession {
-  private readonly uniquePositions = new Map<PositionHash, Position>();
-  private track(positions: Position[]): void {
-    positions.forEach((position) => this.uniquePositions.set(this.hashPosition(position), position));
-  }
-
-  private hashPosition({ x, y }: Position): PositionHash {
-    return `${x}:${y}`;
-  }
-
-  performCleaning(input: CleanOfficeInput): Pick<CleanExecution, 'commands' | 'duration' | 'uniqueVisits'> {
+  static execute(input: CleaningInput): Pick<CleanExecution, 'commands' | 'duration' | 'uniqueVisits'> {
     const [uniqueVisits, duration] = PerformanceHelper.measureDuration(() => {
       const cleaningRobot = new CleaningRobot(input.start);
+      const visitTracker = new VisitTracker()
       for (const command of input.commands) {
         const visits = cleaningRobot.move(command);
-        this.track(visits);
+        visitTracker.track(visits);
       }
-      return this.uniquePositions.size;
+      return visitTracker.countUniqueVisits();
     });
     return { commands: input.commands.length, uniqueVisits, duration };
   }
