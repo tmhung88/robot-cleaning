@@ -136,5 +136,38 @@ describe('CleaningSession', () => {
         uniqueVisits: 20001,
       });
     });
+
+    /**
+     * The performance test should have a separate pipeline and not part of unit testing.
+     * The test validates if the algo performs cleaning in the worst scenario:
+     * - MAX_COMMANDS * MAX_STEPS
+     * - all visits are unique
+     */
+    it.skip('should track all unique visits MAX_COMMANDS * MAX_STEPS', () => {
+      const farthestSouthWest = { x: CleaningSession.MIN_X, y: CleaningSession.MIN_Y };
+      const maxCommands: CleaningCommand[] = [];
+      // insert 4 commands with MAX_STEPS per loop
+      // the commands with 1 step are insignificant, and not counted to total commands
+      for (let i = 0; i < CleaningSession.MAX_COMMANDS / 4; i++) {
+        maxCommands.push(
+          { steps: CleaningSession.MAX_STEPS, direction: Direction.north },
+          { steps: CleaningSession.MAX_STEPS, direction: Direction.north },
+          { steps: 1, direction: Direction.east },
+          { steps: CleaningSession.MAX_STEPS, direction: Direction.south },
+          { steps: CleaningSession.MAX_STEPS, direction: Direction.south },
+          { steps: 1, direction: Direction.east },
+        );
+      }
+
+      const actualExecution = cleaningSession.execute({
+        start: farthestSouthWest,
+        commands: maxCommands,
+      });
+
+      assertExecution(actualExecution, {
+        commands: maxCommands.length,
+        uniqueVisits: 999995001,
+      });
+    });
   });
 });

@@ -2,8 +2,6 @@ import request, { Response } from 'supertest';
 import { Test } from '@nestjs/testing';
 import { AppModule } from 'src/app.module';
 import { INestApplication } from '@nestjs/common';
-import { CleaningSession } from 'src/cleaning/services/cleaning-session.model';
-import { CleaningCommand, CleaningInput, Direction } from 'src/cleaning/cleaning-input.dto';
 import { Repository } from 'typeorm';
 import { CleanExecution } from 'src/cleaning/clean-execution.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -75,34 +73,6 @@ describe('CleaningController', () => {
       const response = await request(app.getHttpServer()).post(cleaningEndpoint).send(payload);
       assertSuccessResponse(response, { commands: payload.commands.length, uniqueVisits: 4 });
       await assertDb(response);
-    });
-
-    it.skip('should track all unique visits MAX_COMMANDS * MAX_STEPS', async () => {
-      const farthestSouthWest = { x: CleaningSession.MIN_X, y: CleaningSession.MIN_Y };
-      const maxCommands: CleaningCommand[] = [];
-      for (let i = 0; i < CleaningSession.MAX_COMMANDS / 4; i++) {
-        maxCommands.push(
-          { steps: CleaningSession.MAX_STEPS, direction: Direction.north },
-          { steps: CleaningSession.MAX_STEPS, direction: Direction.north },
-          { steps: 1, direction: Direction.east },
-          { steps: CleaningSession.MAX_STEPS, direction: Direction.south },
-          { steps: CleaningSession.MAX_STEPS, direction: Direction.south },
-          { steps: 1, direction: Direction.east },
-        );
-      }
-      const payload: CleaningInput = {
-        start: farthestSouthWest,
-        commands: maxCommands,
-      };
-      const response = await request(app.getHttpServer()).post(cleaningEndpoint).send(payload);
-
-      expect(response.body).toStrictEqual({
-        uniqueVisits: 1,
-        commands: maxCommands.length,
-        duration: expect.isPositiveNumber(),
-        id: expect.isPositiveNumber(),
-        insertedAt: expect.closeToNow(),
-      });
     });
   });
 });
