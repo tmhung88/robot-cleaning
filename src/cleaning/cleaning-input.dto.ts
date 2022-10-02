@@ -29,7 +29,7 @@ export enum Direction {
   south = 'south',
 }
 
-export class Command {
+export class CleaningCommand {
   @IsEnum(Direction)
   direction: Direction;
 
@@ -48,6 +48,6 @@ export class CleaningInput {
   @ValidateNested({ each: true })
   @ArrayMinSize(0)
   @ArrayMaxSize(10000)
-  @Type(() => Command)
-  commands: Command[];
+  @Type(() => CleaningCommand)
+  commands: CleaningCommand[];
 }
