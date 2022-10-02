@@ -120,7 +120,7 @@ class Partition {
     if (this.isFull) {
       return;
     }
-    assertNonNullable(this.trackedPositions, 'trackedPositions must not be null when bucket is not full');
+    assertNonNullable(this.trackedPositions, 'trackedPositions must not be null when partition is not full');
     this.trackedPositions.add(this.hashPosition(position));
     if (this.trackedPositions.size === Partition.MAX_VISIT_CAPACITY) {
       this.isFull = true;
@@ -133,7 +133,7 @@ class Partition {
       return Partition.MAX_VISIT_CAPACITY;
     }
 
-    assertNonNullable(this.trackedPositions, 'trackedPositions must not be null when bucket is not full');
+    assertNonNullable(this.trackedPositions, 'trackedPositions must not be null when partition is not full');
     return this.trackedPositions.size;
   }
 
@@ -178,8 +178,8 @@ class VisitTracker {
     if (partition != null) {
       return partition;
     }
-    const newBucket = new Partition();
-    this.partitionMap.set(partitionHash, newBucket);
-    return newBucket;
+    const newPartition = new Partition();
+    this.partitionMap.set(partitionHash, newPartition);
+    return newPartition;
   }
 }
