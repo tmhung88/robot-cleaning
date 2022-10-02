@@ -14,12 +14,12 @@ describe('PerformanceHelper', () => {
     it('should return function result along with duration', () => {
       const secondPart = 0;
       const nanoSecondPart = 999999999;
-      const mockFnResult = { hello: 'world' }
+      const mockFnResult = { hello: 'world' };
       jest.spyOn(process, 'hrtime').mockReturnValue([secondPart, nanoSecondPart]);
 
       const [actualFnResult, duration] = PerformanceHelper.measureDuration(() => mockFnResult);
       expect(duration).toStrictEqual(0.999999999);
-      expect(actualFnResult).toStrictEqual(mockFnResult)
+      expect(actualFnResult).toStrictEqual(mockFnResult);
     });
   });
-})
+});

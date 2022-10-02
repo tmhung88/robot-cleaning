@@ -16,7 +16,6 @@ export const postgresConfigFactory = (): { postgres: PostgresConfig } => {
   assertNotEmpty(process.env['POSTGRES_PASSWORD'], 'POSTGRES_PASSWORD must be available');
   assertNotEmpty(process.env['POSTGRES_DB'], 'POSTGRES_DB must be available');
 
-
   return {
     postgres: {
       host: process.env['POSTGRES_HOST'],

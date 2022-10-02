@@ -4,19 +4,20 @@ import { CleanExecution } from 'src/cleaning/clean-execution.entity';
 import { PerformanceHelper } from 'src/helper/performance.helper';
 
 describe('CleaningSession', () => {
-
   describe('execute()', () => {
     const mockedDuration = 0.01111;
     beforeEach(() => {
-      jest.spyOn(PerformanceHelper, 'measureDuration').mockImplementation(fn => {
+      jest.spyOn(PerformanceHelper, 'measureDuration').mockImplementation((fn) => {
         return [fn(), mockedDuration];
       });
     });
 
-    const assertExecution = (actualExecution: Pick<CleanExecution, 'commands' | 'duration' | 'uniqueVisits'>,
-                             expectExecution: { commands: number, uniqueVisits: number }) => {
+    const assertExecution = (
+      actualExecution: Pick<CleanExecution, 'commands' | 'duration' | 'uniqueVisits'>,
+      expectExecution: { commands: number; uniqueVisits: number },
+    ) => {
       expect(actualExecution).toStrictEqual({
-        'duration': mockedDuration,
+        duration: mockedDuration,
         ...expectExecution,
       });
     };
@@ -24,14 +25,15 @@ describe('CleaningSession', () => {
     it('should track the initial starting point when no commands are given', () => {
       const actualExecution = CleaningSession.execute({ start: { x: -1, y: 14 }, commands: [] });
       assertExecution(actualExecution, {
-        'commands': 0,
-        'uniqueVisits': 1,
+        commands: 0,
+        uniqueVisits: 1,
       });
     });
 
     it('should track unique visits', () => {
       const actualExecution = CleaningSession.execute({
-        start: { x: 0, y: 0 }, commands: [
+        start: { x: 0, y: 0 },
+        commands: [
           { steps: 2, direction: Direction.north },
           { steps: 1, direction: Direction.south },
           { steps: 1, direction: Direction.south },
@@ -50,60 +52,64 @@ describe('CleaningSession', () => {
         ],
       });
       assertExecution(actualExecution, {
-        'commands': 12,
-        'uniqueVisits': 9,
+        commands: 12,
+        uniqueVisits: 9,
       });
     });
 
     it('should not track visits too far North', () => {
       const actualExecution = CleaningSession.execute({
-        start: { x: 0, y: CleaningSession.MAX_Y }, commands: [
+        start: { x: 0, y: CleaningSession.MAX_Y },
+        commands: [
           { steps: 1, direction: Direction.north },
           { steps: 2, direction: Direction.north },
         ],
       });
       assertExecution(actualExecution, {
-        'commands': 2,
-        'uniqueVisits': 1,
+        commands: 2,
+        uniqueVisits: 1,
       });
     });
 
     it('should not track visits too far South', () => {
       const actualExecution = CleaningSession.execute({
-        start: { x: 0, y: CleaningSession.MIN_Y }, commands: [
+        start: { x: 0, y: CleaningSession.MIN_Y },
+        commands: [
           { steps: 4, direction: Direction.south },
           { steps: 2, direction: Direction.south },
         ],
       });
       assertExecution(actualExecution, {
-        'commands': 2,
-        'uniqueVisits': 1,
+        commands: 2,
+        uniqueVisits: 1,
       });
     });
 
     it('should not track visits too far East', () => {
       const actualExecution = CleaningSession.execute({
-        start: { x: CleaningSession.MAX_X, y: 0 }, commands: [
+        start: { x: CleaningSession.MAX_X, y: 0 },
+        commands: [
           { steps: 1, direction: Direction.east },
           { steps: 1, direction: Direction.east },
         ],
       });
       assertExecution(actualExecution, {
-        'commands': 2,
-        'uniqueVisits': 1,
+        commands: 2,
+        uniqueVisits: 1,
       });
     });
 
     it('should not track visits too far West', () => {
       const actualExecution = CleaningSession.execute({
-        start: { x: CleaningSession.MIN_X, y: 0 }, commands: [
+        start: { x: CleaningSession.MIN_X, y: 0 },
+        commands: [
           { steps: 1, direction: Direction.west },
           { steps: 1, direction: Direction.west },
         ],
       });
       assertExecution(actualExecution, {
-        'commands': 2,
-        'uniqueVisits': 1,
+        commands: 2,
+        uniqueVisits: 1,
       });
     });
 
@@ -119,13 +125,14 @@ describe('CleaningSession', () => {
       }
 
       const actualExecution = CleaningSession.execute({
-        start: { x: -50, y: -50 }, commands,
+        start: { x: -50, y: -50 },
+        commands,
       });
 
       assertExecution(actualExecution, {
         commands: commands.length,
-        uniqueVisits: 20001
-      })
+        uniqueVisits: 20001,
+      });
     });
   });
 });

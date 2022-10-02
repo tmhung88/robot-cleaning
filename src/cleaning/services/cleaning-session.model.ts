@@ -4,8 +4,7 @@ import { assertNonNullable } from 'src/helper/assert.helper';
 import { PerformanceHelper } from 'src/helper/performance.helper';
 
 class CleaningRobot {
-  constructor(private position: Position) {
-  }
+  constructor(private position: Position) {}
 
   move(command: CleaningCommand): Position[] {
     const visits: Position[] = [this.position];
@@ -100,7 +99,10 @@ class VisitTracker {
   }
 
   countUniqueVisits(): number {
-    return Array.from(this.bucketMap.values()).reduce((prevCount, currentPartition) => prevCount + currentPartition.countUniqueVisits(), 0);
+    return Array.from(this.bucketMap.values()).reduce(
+      (prevCount, currentPartition) => prevCount + currentPartition.countUniqueVisits(),
+      0,
+    );
   }
 
   private trackPosition(position: Position): void {
@@ -112,7 +114,7 @@ class VisitTracker {
     const bucketHash = `${Math.floor(position.x / Bucket.BUCKET_SIDE)}:${Math.floor(position.y / Bucket.BUCKET_SIDE)}`;
     const bucket = this.bucketMap.get(bucketHash);
     if (bucket != null) {
-      return bucket
+      return bucket;
     }
     const newBucket = new Bucket();
     this.bucketMap.set(bucketHash, newBucket);
@@ -127,7 +129,7 @@ export class CleaningSession {
   static readonly MAX_X = 100000;
   static readonly MIN_Y = -100000;
   static readonly MAX_Y = 100000;
-  static readonly MAX_STEPS =  100000 - 1;
+  static readonly MAX_STEPS = 100000 - 1;
   static readonly MAX_COMMANDS = 10000;
 
   static execute(input: CleaningInput): Pick<CleanExecution, 'commands' | 'duration' | 'uniqueVisits'> {

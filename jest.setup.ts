@@ -9,16 +9,14 @@ expect.extend({
     };
   },
 
-  closeToNow(received: string,
-             opts?: { deltaInSec: number }): CustomMatcherResult {
-
+  closeToNow(received: string, opts?: { deltaInSec: number }): CustomMatcherResult {
     const defaultOpts = { deltaInSec: 10 };
     const expectedDeltaInSec = opts?.deltaInSec ?? defaultOpts.deltaInSec;
     const receivedDate = new Date(received);
     const actualDelta = Math.abs(Date.now() - receivedDate.getTime()) / 1000;
     return {
       pass: actualDelta < expectedDeltaInSec,
-      message: () => `expected ${received} within ${opts.deltaInSec} from Date.now()`,
+      message: () => `expected ${received} within ${expectedDeltaInSec} from Date.now()`,
     };
   },
 });

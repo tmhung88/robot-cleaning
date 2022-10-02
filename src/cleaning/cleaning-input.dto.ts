@@ -1,13 +1,4 @@
-import {
-  ArrayMaxSize,
-  ArrayMinSize,
-  IsArray,
-  IsEnum,
-  IsInt,
-  Max,
-  Min,
-  ValidateNested,
-} from 'class-validator';
+import { ArrayMaxSize, ArrayMinSize, IsArray, IsEnum, IsInt, Max, Min, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class Position {

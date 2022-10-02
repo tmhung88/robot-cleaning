@@ -2,10 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CleaningModule } from 'src/cleaning/cleaning.module';
-import {
-  PostgresConfig,
-  postgresConfigFactory,
-} from 'src/config/postgres.config';
+import { PostgresConfig, postgresConfigFactory } from 'src/config/postgres.config';
 import { appConfigFactory } from 'src/config/app.config';
 import { LoggerModule } from 'nestjs-pino';
 

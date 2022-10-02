@@ -7,10 +7,10 @@ import { CleaningSession } from 'src/cleaning/services/cleaning-session.model';
 
 @Injectable()
 export class CleaningExecutionService {
-
-  constructor(@InjectRepository(CleanExecution)
-              private cleanExecutionRepo: Repository<CleanExecution>) {
-  }
+  constructor(
+    @InjectRepository(CleanExecution)
+    private cleanExecutionRepo: Repository<CleanExecution>,
+  ) {}
 
   async clean(input: CleaningInput): Promise<CleanExecution> {
     const cleanResult = CleaningSession.execute(input);
