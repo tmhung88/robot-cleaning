@@ -1,7 +1,7 @@
-import { CleaningSession } from 'src/cleaning/service/cleaning-session.model';
-import { PerformanceHelper } from 'src/cleaning/service/performance.helper';
+import { CleaningSession } from 'src/cleaning/services/cleaning-session.model';
 import { CleaningCommand, Direction } from 'src/cleaning/cleaning-input.dto';
 import { CleanExecution } from 'src/cleaning/clean-execution.entity';
+import { PerformanceHelper } from 'src/helper/performance.helper';
 
 describe('CleaningSession', () => {
 

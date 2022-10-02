@@ -1,6 +1,7 @@
 import { CleaningCommand, CleaningInput, Direction, Position } from 'src/cleaning/cleaning-input.dto';
 import { CleanExecution } from 'src/cleaning/clean-execution.entity';
-import { PerformanceHelper } from 'src/cleaning/service/performance.helper';
+import { assertNonNullable } from 'src/helper/assert.helper';
+import { PerformanceHelper } from 'src/helper/performance.helper';
 
 class CleaningRobot {
   constructor(private position: Position) {
@@ -62,13 +63,14 @@ class CleaningRobot {
 class Bucket {
   public static BUCKET_SIDE = 64;
   private static MAX_CAPACITY = Bucket.BUCKET_SIDE * Bucket.BUCKET_SIDE;
-  private trackedPositions = new Set<PositionHash>();
+  private trackedPositions: Set<PositionHash> | null = new Set<PositionHash>();
   private isFull = false;
 
   track(position: Position): void {
     if (this.isFull) {
       return;
     }
+    assertNonNullable(this.trackedPositions, 'trackedPositions must not be null when bucket is not full');
     this.trackedPositions.add(this.hashPosition(position));
     if (this.trackedPositions.size === Bucket.MAX_CAPACITY) {
       this.isFull = true;
@@ -80,6 +82,8 @@ class Bucket {
     if (this.isFull) {
       return Bucket.MAX_CAPACITY;
     }
+
+    assertNonNullable(this.trackedPositions, 'trackedPositions must not be null when bucket is not full');
     return this.trackedPositions.size;
   }
 
@@ -100,16 +104,19 @@ class VisitTracker {
   }
 
   private trackPosition(position: Position): void {
-    const bucket = this.getBucket(position);
+    const bucket = this.resolveBucket(position);
     bucket.track(position);
   }
 
-  private getBucket(position: Position): Bucket {
+  private resolveBucket(position: Position): Bucket {
     const bucketHash = `${Math.floor(position.x / Bucket.BUCKET_SIDE)}:${Math.floor(position.y / Bucket.BUCKET_SIDE)}`;
-    if (!this.bucketMap.has(bucketHash)) {
-      this.bucketMap.set(bucketHash, new Bucket());
+    const bucket = this.bucketMap.get(bucketHash);
+    if (bucket != null) {
+      return bucket
     }
-    return this.bucketMap.get(bucketHash);
+    const newBucket = new Bucket();
+    this.bucketMap.set(bucketHash, newBucket);
+    return newBucket;
   }
 }
 
