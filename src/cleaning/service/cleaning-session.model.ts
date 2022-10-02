@@ -1,4 +1,4 @@
-import { CleaningInput, CleaningCommand, Direction, Position } from 'src/cleaning/cleaning-input.dto';
+import { CleaningCommand, CleaningInput, Direction, Position } from 'src/cleaning/cleaning-input.dto';
 import { CleanExecution } from 'src/cleaning/clean-execution.entity';
 import { PerformanceHelper } from 'src/cleaning/service/performance.helper';
 
@@ -120,7 +120,7 @@ export class CleaningSession {
   static readonly MAX_X = 100000;
   static readonly MIN_Y = -100000;
   static readonly MAX_Y = 100000;
-  static readonly MAX_STEPS = 100000;
+  static readonly MAX_STEPS =  100000 - 1;
   static readonly MAX_COMMANDS = 10000;
 
   static execute(input: CleaningInput): Pick<CleanExecution, 'commands' | 'duration' | 'uniqueVisits'> {

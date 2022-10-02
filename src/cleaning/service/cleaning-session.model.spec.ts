@@ -107,39 +107,25 @@ describe('CleaningSession', () => {
       });
     });
 
-    it('should not track visits too far West', () => {
-      const actualExecution = CleaningSession.execute({
-        start: { x: CleaningSession.MIN_X, y: 0 }, commands: [
-          { steps: 1, direction: Direction.west },
-          { steps: 1, direction: Direction.west },
-        ],
-      });
-      assertExecution(actualExecution, {
-        'commands': 2,
-        'uniqueVisits': 1,
-      });
-    });
-
-    it('should track all unique visits MAX_COMMANDS * MAX_STEPS', () => {
-      const farthestSouthWest = { x: CleaningSession.MIN_X, y: CleaningSession.MIN_Y };
-      const maxCommands: CleaningCommand[] = [];
-      for (let i = 0; i < CleaningSession.MAX_COMMANDS; i++) {
-        maxCommands.push(
-          { steps: CleaningSession.MAX_STEPS, direction: Direction.north },
-          { steps: CleaningSession.MAX_STEPS, direction: Direction.north },
+    it('should track unique visits when walking in up and down in a square', () => {
+      const commands: CleaningCommand[] = [];
+      for (let i = 0; i < 100; i++) {
+        commands.push(
+          { steps: 99, direction: Direction.north },
           { steps: 1, direction: Direction.east },
-          { steps: CleaningSession.MAX_STEPS, direction: Direction.south },
-          { steps: CleaningSession.MAX_STEPS, direction: Direction.south },
+          { steps: 99, direction: Direction.south },
           { steps: 1, direction: Direction.east },
         );
       }
+
       const actualExecution = CleaningSession.execute({
-        start: farthestSouthWest, commands: maxCommands,
+        start: { x: -50, y: -50 }, commands,
       });
+
       assertExecution(actualExecution, {
-        'commands': 2,
-        'uniqueVisits': 1,
-      });
+        commands: commands.length,
+        uniqueVisits: 20001
+      })
     });
   });
 });
