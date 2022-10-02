@@ -59,33 +59,57 @@ class CleaningRobot {
   }
 }
 
+class Bucket {
+  public static BUCKET_SIDE = 64;
+  private static MAX_CAPACITY = Bucket.BUCKET_SIDE * Bucket.BUCKET_SIDE;
+  private trackedPositions = new Set<PositionHash>();
+  private isFull = false;
+
+  track(position: Position): void {
+    if (this.isFull) {
+      return;
+    }
+    this.trackedPositions.add(this.hashPosition(position));
+    if (this.trackedPositions.size === Bucket.MAX_CAPACITY) {
+      this.isFull = true;
+      this.trackedPositions = null;
+    }
+  }
+
+  countUniqueVisits(): number {
+    if (this.isFull) {
+      return Bucket.MAX_CAPACITY;
+    }
+    return this.trackedPositions.size;
+  }
+
+  private hashPosition({ x, y }: Position): PositionHash {
+    return `${x % Bucket.BUCKET_SIDE}:${y % Bucket.BUCKET_SIDE}`;
+  }
+}
+
 class VisitTracker {
-  private partitionMap = new Map<string, Map<PositionHash, Position>>();
+  private bucketMap = new Map<string, Bucket>();
 
   trackPositions(positions: Position[]): void {
     positions.forEach((position) => this.trackPosition(position));
   }
 
   countUniqueVisits(): number {
-    return Array.from(this.partitionMap.values()).reduce((prevCount, currentPartition) => prevCount + currentPartition.size, 0);
+    return Array.from(this.bucketMap.values()).reduce((prevCount, currentPartition) => prevCount + currentPartition.countUniqueVisits(), 0);
   }
 
   private trackPosition(position: Position): void {
-    const partition = this.getPartition(position);
-    partition.set(this.hashPosition(position), position);
+    const bucket = this.getBucket(position);
+    bucket.track(position);
   }
 
-  private getPartition(position: Position): Map<PositionHash, Position> {
-    const partitionHash = `${Math.floor(position.x / 4096)}:${Math.floor(position.y / 4096)}`
-    if (!this.partitionMap.has(partitionHash)) {
-      this.partitionMap.set(partitionHash, new Map());
+  private getBucket(position: Position): Bucket {
+    const bucketHash = `${Math.floor(position.x / Bucket.BUCKET_SIDE)}:${Math.floor(position.y / Bucket.BUCKET_SIDE)}`;
+    if (!this.bucketMap.has(bucketHash)) {
+      this.bucketMap.set(bucketHash, new Bucket());
     }
-    return this.partitionMap.get(partitionHash);
-  }
-
-
-  private hashPosition({ x, y }: Position): PositionHash {
-    return `${Math.abs(x) % 4096}:${Math.abs(y) % 4096}`;
+    return this.bucketMap.get(bucketHash);
   }
 }
 
@@ -96,7 +120,7 @@ export class CleaningSession {
   static readonly MAX_X = 100000;
   static readonly MIN_Y = -100000;
   static readonly MAX_Y = 100000;
-  static readonly MAX_STEPS = 99999;
+  static readonly MAX_STEPS = 100000;
   static readonly MAX_COMMANDS = 10000;
 
   static execute(input: CleaningInput): Pick<CleanExecution, 'commands' | 'duration' | 'uniqueVisits'> {
@@ -104,10 +128,14 @@ export class CleaningSession {
       const cleaningRobot = new CleaningRobot(input.start);
       const visitTracker = new VisitTracker();
       visitTracker.trackPositions([input.start]);
-      for (const command of input.commands) {
+      input.commands.forEach((command, index) => {
+        if (index % 100 === 0) {
+          console.log(`command ${index}`);
+        }
         const visits = cleaningRobot.move(command);
         visitTracker.trackPositions(visits);
-      }
+      });
+
       return visitTracker.countUniqueVisits();
     });
     return { commands: input.commands.length, uniqueVisits, duration };
