@@ -1,21 +1,21 @@
 {
+  "extends": "@tsconfig/node16-strictest/tsconfig.json",
   "compilerOptions": {
-    "module": "commonjs",
+    "strictPropertyInitialization": false,
+    "importsNotUsedAsValues": "remove",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es2017",
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
-    "skipLibCheck": true,
     "paths": {
       "src/*": [
         "./src/*"
-      ],
+      ]
     }
   }
 }

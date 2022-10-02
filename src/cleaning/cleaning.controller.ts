@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { CleanExecution } from 'src/cleaning/clean-execution.entity';
 import { CleaningInput } from 'src/cleaning/cleaning-input.dto';
-import { CleaningExecutionService } from 'src/cleaning/service/cleaning-execution.service';
+import { CleaningExecutionService } from 'src/cleaning/services/cleaning-execution.service';
 
 @Controller()
 export class CleaningController {
