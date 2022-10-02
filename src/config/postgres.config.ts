@@ -1,4 +1,4 @@
-import { assertNotEmpty } from 'src/helper/assert.helper';
+import { assertNotEmpty } from '../helper/assert.helper';
 
 export interface PostgresConfig {
   host: string;
@@ -9,7 +9,7 @@ export interface PostgresConfig {
 }
 
 export const postgresConfigFactory = (): { postgres: PostgresConfig } => {
-  assertNotEmpty(process.env['POSTGRES_HOST'], 'POSTGRES_HOST must be available');
+  assertNotEmpty(process.env['POSTGRES_HOST'], 'POSTGRES_HOST m ust be available');
   assertNotEmpty(process.env['POSTGRES_PORT'], 'POSTGRES_PORT must be available');
   assertNotEmpty(process.env['POSTGRES_USER'], 'POSTGRES_USER must be available');
   assertNotEmpty(process.env['POSTGRES_HOST'], 'POSTGRES_HOST must be available');
